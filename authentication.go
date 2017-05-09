@@ -4,7 +4,9 @@ import (
 	"github.com/andelf/go-curl"
 	"encoding/json"
 	"os"
-	"log"
+	"io/ioutil"
+	"regexp"
+
 )
 
 type auth struct{
@@ -55,11 +57,14 @@ func (c Cookie) GetCookie() (state bool, err string) {
 	return state, err
 }
 
-func (c Cookie) GetCsrf()  {
+func (c Cookie) GetCsrf()  string {
 	if _, err := os.Stat(c.fileCookie); os.IsNotExist(err) {
 		c.GetCookie()
 	}
-	fileContent := os.Open(c.fileCookie)
-	log.Println(string(fileContent))
-	os.Exit(2)
+	fileContent,_ := ioutil.ReadFile(c.fileCookie)
+
+	r, _ := regexp.Compile(`BPMCSRF\s(.+)`)
+	matches := r.FindAllStringSubmatch(string(fileContent), 4)
+
+	return  matches[0][1]
 }

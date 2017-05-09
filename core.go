@@ -1,12 +1,14 @@
 package bpm
 
 import (
-
+	"os"
+	"log"
 )
 
 
 func Bmp()  {
-	AuthInit().GetCookie()
+	log.Println(	AuthInit().GetCsrf())
+	os.Exit(2)
 }
 
 
