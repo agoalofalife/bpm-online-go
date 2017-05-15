@@ -2,5 +2,9 @@ package bpm
 
 
 type Action interface {
-	Execute()
+	Execute() bool
 }
+
+//type Handler interface {
+//	Handler() (map[string]string , err error)
+//}
