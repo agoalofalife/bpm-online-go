@@ -9,7 +9,7 @@ type Select struct {
 	url    string
 }
 
-// init
+// init action Read or Select
 func Read() *Select {
 	read := Select{}
 	read.method = `GET`

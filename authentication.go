@@ -1,43 +1,42 @@
 package bpm
 
 import (
-	"github.com/andelf/go-curl"
 	"encoding/json"
-	"os"
+	"github.com/andelf/go-curl"
 	"io/ioutil"
+	"os"
 	"regexp"
-
 )
 
-type auth struct{
-	UserName string
+type auth struct {
+	UserName     string
 	UserPassword string
 }
 
 type Cookie struct {
 	fileCookie string
-	prefixCSRF  string
+	prefixCSRF string
 }
 
 func AuthInit() Cookie {
 	cookie := Cookie{}
-	cookie.fileCookie =  `./cookie.txt`
-	cookie.prefixCSRF =  `BPMCSRF`
+	cookie.fileCookie = `./cookie.txt`
+	cookie.prefixCSRF = `BPMCSRF`
 	return cookie
 }
 
 func (c Cookie) GetCookie() (state bool, err string) {
 
-	url, _     :=  Config().String("auth.UrlLogin")
-	login,_    :=  Config().String("auth.login")
-	password,_ :=  Config().String("auth.Password")
+	url, _ := Config().String("auth.UrlLogin")
+	login, _ := Config().String("auth.login")
+	password, _ := Config().String("auth.Password")
 
 	jsonSchema := &auth{
-		UserName     : login,
-		UserPassword : password,
+		UserName:     login,
+		UserPassword: password,
 	}
 
-	jsonString , _ := json.Marshal(jsonSchema)
+	jsonString, _ := json.Marshal(jsonSchema)
 
 	easy := curl.EasyInit()
 	defer easy.Cleanup()
@@ -49,22 +48,22 @@ func (c Cookie) GetCookie() (state bool, err string) {
 		easy.Setopt(curl.OPT_POSTFIELDS, string(jsonString))
 	}
 	if error := easy.Perform(); error != nil {
-		err  = error.Error()
-	} else{
+		err = error.Error()
+	} else {
 		state = true
 	}
 
 	return state, err
 }
 
-func (c Cookie) GetCsrf()  string {
+func (c Cookie) GetCsrf() string {
 	if _, err := os.Stat(c.fileCookie); os.IsNotExist(err) {
 		c.GetCookie()
 	}
-	fileContent,_ := ioutil.ReadFile(c.fileCookie)
+	fileContent, _ := ioutil.ReadFile(c.fileCookie)
 
 	r, _ := regexp.Compile(`BPMCSRF\s(.+)`)
 	matches := r.FindAllStringSubmatch(string(fileContent), 4)
 
-	return  matches[0][1]
+	return matches[0][1]
 }

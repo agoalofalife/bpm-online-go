@@ -7,13 +7,21 @@ import (
 
 type Core struct {
 	collection string
+	Actions    map[string]Action
 }
 
 // Init application
 func Start(collection string) *Core {
+	mapsAction := make(map[string]Action)
 	core := Core{}
-	core.collection = collection
+	core.collection = collection + "Collection"
+	mapsAction["read"] = Read()
+	core.Actions = mapsAction
 	return &core
+}
+// return link Read Action
+func (core Core ) Read()  *Select {
+	return Read()
 }
 
 func BmpTest() {

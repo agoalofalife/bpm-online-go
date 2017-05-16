@@ -5,11 +5,11 @@ import (
 	"log"
 )
 
-func Config()  *config.Config {
+func Config() *config.Config {
 
 	cfg, err := config.ParseYamlFile("configuration.yml")
 
-	if err != nil{
+	if err != nil {
 		log.Fatal(err)
 	}
 
