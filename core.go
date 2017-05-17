@@ -3,13 +3,17 @@ package bpm
 type Core struct {
 	collection string
 	cookie     Cookie
+	handler Handler
 }
 
 // Init application
-func Start(collection string) *Core {
+func Start(collection string, handler string) *Core {
 	core := Core{}
 	core.collection = collection + "Collection"
 	core.cookie	= AuthInit()
+	if handler == "" {
+		handler = XmlInit()
+	}
 	return &core
 }
 

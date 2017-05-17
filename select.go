@@ -36,7 +36,6 @@ func (read *Select) Execute() bool {
 		easy.Setopt(curl.OPT_URL, urlHome)
 		easy.Setopt(curl.OPT_VERBOSE, true)
 		easy.Setopt(curl.OPT_COOKIEFILE, "./cookie.txt")
-		//easy.Setopt(curl.OPT_COOKIEJAR, read.core.cookie.fileCookie)
 		//easy.Setopt(curl.OPT_HTTPHEADER, []string{read.method + "  HTTP/1.0", "Content-type: application/json"})
 	}
 	if error := easy.Perform(); error != nil {
