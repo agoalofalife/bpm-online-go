@@ -1,7 +1,7 @@
 package bpm
 
 import (
-	//"net/url"
+	"strings"
 	"github.com/andelf/go-curl"
 	"log"
 	"os"
@@ -22,24 +22,29 @@ func Read(core *Core) *Select {
 }
 
 func (read *Select) Execute() bool {
+	escapeUrl  := strings.Replace(read.url, " ", "%20", -1)
+	prepareUrl := read.core.collection + escapeUrl
 
-	prepareUrl := read.core.collection + read.url
-	//prepareUrl    := read.core.collection +  url.QueryEscape(read.url)
 	urlHome, _ := Config().String("auth.UrlHome")
 	urlHome += prepareUrl
 
 	easy := curl.EasyInit()
 	defer easy.Cleanup()
+
+
 	if easy != nil {
 		easy.Setopt(curl.OPT_URL, urlHome)
 		easy.Setopt(curl.OPT_VERBOSE, true)
-		easy.Setopt(curl.OPT_COOKIEJAR, read.core.cookie.fileCookie)
-		easy.Setopt(curl.OPT_HTTPHEADER, []string{read.method + "  HTTP/1.0", "Content-type: application/json"})
+		easy.Setopt(curl.OPT_COOKIEFILE, "./cookie.txt")
+		//easy.Setopt(curl.OPT_COOKIEJAR, read.core.cookie.fileCookie)
+		//easy.Setopt(curl.OPT_HTTPHEADER, []string{read.method + "  HTTP/1.0", "Content-type: application/json"})
 	}
 	if error := easy.Perform(); error != nil {
 		log.Println(error)
 		os.Exit(2)
 	}
+	log.Println(easy)
+	os.Exit(2)
 	return true
 }
 

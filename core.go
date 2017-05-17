@@ -9,6 +9,7 @@ type Core struct {
 func Start(collection string) *Core {
 	core := Core{}
 	core.collection = collection + "Collection"
+	core.cookie	= AuthInit()
 	return &core
 }
 
