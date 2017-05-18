@@ -6,7 +6,9 @@ type Xml struct {
 
 }
 type XmlFile struct {
-
+	Id        string `xml:"Id"`
+	Number    string `xml:"Number"`
+	S string `xml:"d>results>Id"`
 }
 
 func XmlInit() *Xml {

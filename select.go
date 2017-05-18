@@ -5,6 +5,7 @@ import (
 	"github.com/andelf/go-curl"
 	"log"
 	"os"
+	"encoding/xml"
 )
 
 type Select struct {
@@ -23,7 +24,7 @@ func Read(core *Core) *Select {
 
 func (read *Select) Execute() bool {
 
-	page := ""
+	var page []byte
 	escapeUrl  := strings.Replace(read.url, " ", "%20", -1)
 	prepareUrl := read.core.collection + escapeUrl
 
@@ -39,7 +40,9 @@ func (read *Select) Execute() bool {
 		easy.Setopt(curl.OPT_VERBOSE, true)
 		easy.Setopt(curl.OPT_COOKIEFILE, "./cookie.txt")
 		easy.Setopt(curl.OPT_WRITEFUNCTION, func(ptr []byte, _ interface{}) bool {
-			page += string(ptr)
+			page = append(page, ptr...)
+			//bytes.Contains(ptr, page)
+			//page += string(ptr)
 			return true
 		})
 		easy.Setopt(curl.OPT_NOPROGRESS, false)
@@ -49,7 +52,10 @@ func (read *Select) Execute() bool {
 		log.Println(error)
 		os.Exit(2)
 	}
-	log.Println(page)
+	var s XmlFile
+
+	xml.Unmarshal(page, &s)
+	log.Println(s)
 	os.Exit(2)
 	return true
 }
