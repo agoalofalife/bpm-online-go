@@ -22,6 +22,8 @@ func Read(core *Core) *Select {
 }
 
 func (read *Select) Execute() bool {
+
+	page := ""
 	escapeUrl  := strings.Replace(read.url, " ", "%20", -1)
 	prepareUrl := read.core.collection + escapeUrl
 
@@ -36,13 +38,18 @@ func (read *Select) Execute() bool {
 		easy.Setopt(curl.OPT_URL, urlHome)
 		easy.Setopt(curl.OPT_VERBOSE, true)
 		easy.Setopt(curl.OPT_COOKIEFILE, "./cookie.txt")
+		easy.Setopt(curl.OPT_WRITEFUNCTION, func(ptr []byte, _ interface{}) bool {
+			page += string(ptr)
+			return true
+		})
+		easy.Setopt(curl.OPT_NOPROGRESS, false)
 		//easy.Setopt(curl.OPT_HTTPHEADER, []string{read.method + "  HTTP/1.0", "Content-type: application/json"})
 	}
 	if error := easy.Perform(); error != nil {
 		log.Println(error)
 		os.Exit(2)
 	}
-	log.Println(easy)
+	log.Println(page)
 	os.Exit(2)
 	return true
 }

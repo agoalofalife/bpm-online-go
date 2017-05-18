@@ -8,6 +8,6 @@ type Action interface {
 
 // Interface Handler
 // Handler xml or json type in depends response bpm service
-type Handler interface {
+type DataType interface {
 	Handler() (map[string]string, error)
 }
