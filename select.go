@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"encoding/xml"
+	"fmt"
 )
 
 type Select struct {
@@ -52,13 +53,21 @@ func (read *Select) Execute() bool {
 		log.Println(error)
 		os.Exit(2)
 	}
-	var s XmlFile
 
-	xml.Unmarshal(page, &s)
+	//var s XmlFeed
+	var s map[string]interface{}
+	err := xml.Unmarshal(page, &s)
+
+	if err != nil {
+		fmt.Println("Error opening file:", err)
+	}
+
 	log.Println(s)
 	os.Exit(2)
 	return true
 }
+
+
 
 // filter constructor
 func (read *Select) FilterConstructor(template string) (readyTemplate string) {

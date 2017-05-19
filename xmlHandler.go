@@ -6,9 +6,16 @@ type Xml struct {
 
 }
 type XmlFile struct {
-	Id        string `xml:"Id"`
-	Number    string `xml:"Number"`
-	S string `xml:"d>results>Id"`
+	S []string  `xml:",any"`
+}
+type XmlFeed struct {
+	Ids []XmlContent `xml:"entry>content>properties"`
+}
+type XmlContent struct {
+	Test string `xml:",any"`
+
+	//Id string `xml:"Id"`/
+	//Number string `xml:"Number"`
 }
 
 func XmlInit() *Xml {
