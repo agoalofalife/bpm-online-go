@@ -3,20 +3,9 @@ package bpm
 import "errors"
 
 type Xml struct {
+	fields map[string]string
+}
 
-}
-type XmlFile struct {
-	S []string  `xml:",any"`
-}
-type XmlFeed struct {
-	Ids []XmlContent `xml:"entry>content>properties"`
-}
-type XmlContent struct {
-	Test string `xml:",any"`
-
-	//Id string `xml:"Id"`/
-	//Number string `xml:"Number"`
-}
 
 func XmlInit() *Xml {
 	xml := Xml{}

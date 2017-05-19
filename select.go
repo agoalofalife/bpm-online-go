@@ -5,8 +5,8 @@ import (
 	"github.com/andelf/go-curl"
 	"log"
 	"os"
-	"encoding/xml"
 	"fmt"
+	"github.com/clbanning/mxj"
 )
 
 type Select struct {
@@ -53,16 +53,29 @@ func (read *Select) Execute() bool {
 		log.Println(error)
 		os.Exit(2)
 	}
+	m, err := mxj.NewMapXml(page)
+	v, _ := m.ValuesForKey("feed")
+	v, _ = m.ValuesForPath("feed.entry.content.properties")
 
 	//var s XmlFeed
-	var s map[string]interface{}
-	err := xml.Unmarshal(page, &s)
+	//var s map[string]interface{}
+	//err := xml.Unmarshal(page, &s)
 
 	if err != nil {
 		fmt.Println("Error opening file:", err)
 	}
 
-	log.Println(s)
+	 xml := make(map[string]interface{})
+	for _, vv := range v {
+		for key, val := range vv.(map[string]interface{}) {
+			xml[key] = val
+			fmt.Println("\t\t", key, ":", val)
+			os.Exit(2)
+		}
+		log.Println(xml)
+		os.Exit(2)
+	}
+	log.Println(xml)
 	os.Exit(2)
 	return true
 }
