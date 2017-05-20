@@ -1,6 +1,12 @@
 package bpm
 
-import "errors"
+import (
+	"errors"
+	"github.com/clbanning/mxj"
+	"fmt"
+	"os"
+	"log"
+)
 
 type Xml struct {
 	fields map[string]string
@@ -25,8 +31,31 @@ func (xml Xml) getAccept() (accept string) {
 	return xml.accept
 }
 
-func (xml Xml) Handler() (map[string]string, error) {
-	maps := make(map[string]string)
+func (xml Xml) Handler(data []byte) (map[string]interface{}, error) {
 	error := errors.New("")
+	log.Println(data(string()), `test collection`)
+	m, err := mxj.NewMapXml(data)
+	v, _ := m.ValuesForKey("xml")
+	//v, _ = m.ValuesForPath("feed.entry.content.properties")
+	v, _ = m.ValuesForPath("service.*")
+	//log.Println(v, `test collection`)
+	os.Exit(2)
+	if err != nil {
+		error = errors.New("Error opening file")
+	}
+
+	maps := make(map[string]interface{})
+	for _, vv := range v {
+		for key, val := range vv.(map[string]interface{}) {
+			maps[key] = val
+			fmt.Println("\t\t", key, ":", val)
+			os.Exit(2)
+		}
+		log.Println(xml)
+		os.Exit(2)
+	}
+	log.Println(xml)
+	os.Exit(2)
+
 	return maps, error
 }

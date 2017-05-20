@@ -1,12 +1,12 @@
 package bpm
 
 import (
-	"strings"
+	//"fmt"
 	"github.com/andelf/go-curl"
+	//"github.com/clbanning/mxj"
 	"log"
 	"os"
-	"fmt"
-	"github.com/clbanning/mxj"
+	"strings"
 )
 
 type Select struct {
@@ -26,7 +26,7 @@ func Read(core *Core) *Select {
 func (read *Select) Execute() bool {
 
 	var page []byte
-	escapeUrl  := strings.Replace(read.url, " ", "%20", -1)
+	escapeUrl := strings.Replace(read.url, " ", "%20", -1)
 	prepareUrl := read.core.collection + escapeUrl
 
 	urlHome, _ := Config().String("auth.UrlHome")
@@ -34,7 +34,6 @@ func (read *Select) Execute() bool {
 
 	easy := curl.EasyInit()
 	defer easy.Cleanup()
-
 
 	if easy != nil {
 		easy.Setopt(curl.OPT_URL, urlHome)
@@ -44,42 +43,37 @@ func (read *Select) Execute() bool {
 			page = append(page, ptr...)
 			return true
 		})
+
 		easy.Setopt(curl.OPT_NOPROGRESS, false)
-		//easy.Setopt(curl.OPT_HTTPHEADER, []string{read.method + "  HTTP/1.0", "Content-type: application/json"})
+		easy.Setopt(curl.OPT_HTTPHEADER, []string{read.method + "  HTTP/1.0", "Content-type: " + read.core.handler.getContentType()})
 	}
 	if error := easy.Perform(); error != nil {
 		log.Println(error)
 		os.Exit(2)
 	}
-	m, err := mxj.NewMapXml(page)
-	v, _ := m.ValuesForKey("xml")
-
-	v, _ = m.ValuesForPath("feed.entry.content.properties")
-
-	//var s XmlFeed
-	//var s map[string]interface{}
-	//err := xml.Unmarshal(page, &s)
-
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-	}
-
-	 xml := make(map[string]interface{})
-	for _, vv := range v {
-		for key, val := range vv.(map[string]interface{}) {
-			xml[key] = val
-			fmt.Println("\t\t", key, ":", val)
-			os.Exit(2)
-		}
-		log.Println(xml)
-		os.Exit(2)
-	}
-	log.Println(xml)
-	os.Exit(2)
+	read.core.handler.Handler(page)
+	//m, err := mxj.NewMapXml(page)
+	//v, _ := m.ValuesForKey("xml")
+	//v, _ = m.ValuesForPath("feed.entry.content.properties")
+	//
+	//if err != nil {
+	//	fmt.Println("Error opening file:", err)
+	//}
+	//
+	//xml := make(map[string]interface{})
+	//for _, vv := range v {
+	//	for key, val := range vv.(map[string]interface{}) {
+	//		xml[key] = val
+	//		fmt.Println("\t\t", key, ":", val)
+	//		os.Exit(2)
+	//	}
+	//	log.Println(xml)
+	//	os.Exit(2)
+	//}
+	//log.Println(xml)
+	//os.Exit(2)
 	return true
 }
-
-
 
 // filter constructor
 func (read *Select) FilterConstructor(template string) (readyTemplate string) {

@@ -9,7 +9,7 @@ type Action interface {
 // Interface Handler
 // Handler xml or json type in depends response bpm service
 type DataType interface {
-	Handler() (map[string]string, error)
-	getAccept()(string)
-	getContentType() (string)
+	Handler(data []byte) (map[string]interface{}, error)
+	getAccept() string
+	getContentType() string
 }

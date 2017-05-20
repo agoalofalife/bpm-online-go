@@ -2,8 +2,6 @@ package bpm
 
 import (
 	"strings"
-	"os"
-	"log"
 )
 
 type Core struct {

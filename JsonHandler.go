@@ -25,8 +25,8 @@ func (json Json) getAccept() (accept string) {
 	return json.accept
 }
 // handler
-func (json Json) Handler() (map[string]string, error) {
-	maps := make(map[string]string)
+func (json Json) Handler(data []byte) (map[string]interface{}, error) {
+	maps := make(map[string]interface{})
 	error := errors.New("")
 	return maps, error
 }
