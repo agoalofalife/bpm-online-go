@@ -16,9 +16,7 @@ type DataType interface {
 
 // turn  this is implements turn
 type turn interface {
-	// add new process
-	add(process turn) (bool)
-	// remove process
-	remove(process turn)(bool)
+	// check on execute
+	stateExecute(data []byte) bool
 }
 

@@ -8,16 +8,31 @@ import (
 	"os"
 )
 
+// base xml file
+type turnXmlFeed struct {}
+
+// check parse xml base
+func (turn turnXmlFeed) stateExecute(data []byte) bool {
+	m, _ := mxj.NewMapXml(data)
+	v, _ := m.ValuesForKey("xml")
+	v, _ = m.ValuesForPath("feed.entry.content.properties")
+	return len(v) == 0
+}
+
+
 type Xml struct {
 	fields      map[string]string
 	accept      string
 	contentType string
+	xmlResponse  []turn
 }
 
 func XmlInit() DataType {
 	xml := Xml{}
 	xml.accept = "application/atom+xml;type=entry"
 	xml.contentType = ""
+	xml.xmlResponse = append(xml.xmlResponse, turnXmlFeed{})
+
 	return &xml
 }
 

@@ -1,9 +1,7 @@
 package bpm
 
 import (
-	//"fmt"
 	"github.com/andelf/go-curl"
-	//"github.com/clbanning/mxj"
 	"log"
 	"os"
 	"strings"
@@ -52,26 +50,6 @@ func (read *Select) Execute() bool {
 		os.Exit(2)
 	}
 	read.core.handler.Handler(page)
-	//m, err := mxj.NewMapXml(page)
-	//v, _ := m.ValuesForKey("xml")
-	//v, _ = m.ValuesForPath("feed.entry.content.properties")
-	//
-	//if err != nil {
-	//	fmt.Println("Error opening file:", err)
-	//}
-	//
-	//xml := make(map[string]interface{})
-	//for _, vv := range v {
-	//	for key, val := range vv.(map[string]interface{}) {
-	//		xml[key] = val
-	//		fmt.Println("\t\t", key, ":", val)
-	//		os.Exit(2)
-	//	}
-	//	log.Println(xml)
-	//	os.Exit(2)
-	//}
-	//log.Println(xml)
-	//os.Exit(2)
 	return true
 }
 
