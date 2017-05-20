@@ -1,21 +1,29 @@
 package bpm
 
 import (
-
+	"strings"
+	"os"
+	"log"
 )
 
 type Core struct {
 	collection string
 	cookie     Cookie
-	handler DataType
+	handler    DataType
 }
 
 // Init application
-func Start(params ...string) *Core {
+func Start(param string) *Core {
+	handlers := map[string]func() DataType{
+		"xml":  XmlInit,
+		"json": JsonInit,
+	}
 	core := Core{}
-	core.collection = params[0] + "Collection"
-	core.cookie	= AuthInit()
-	core.handler    = XmlInit()
+	split := strings.Split(param, ":")
+
+	core.collection = split[0] + "Collection"
+	core.cookie = AuthInit()
+	core.handler = (handlers[split[1]])()
 	return &core
 }
 

@@ -42,8 +42,6 @@ func (read *Select) Execute() bool {
 		easy.Setopt(curl.OPT_COOKIEFILE, "./cookie.txt")
 		easy.Setopt(curl.OPT_WRITEFUNCTION, func(ptr []byte, _ interface{}) bool {
 			page = append(page, ptr...)
-			//bytes.Contains(ptr, page)
-			//page += string(ptr)
 			return true
 		})
 		easy.Setopt(curl.OPT_NOPROGRESS, false)
@@ -54,7 +52,8 @@ func (read *Select) Execute() bool {
 		os.Exit(2)
 	}
 	m, err := mxj.NewMapXml(page)
-	v, _ := m.ValuesForKey("feed")
+	v, _ := m.ValuesForKey("xml")
+
 	v, _ = m.ValuesForPath("feed.entry.content.properties")
 
 	//var s XmlFeed
