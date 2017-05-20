@@ -2,18 +2,17 @@ package bpm
 
 import (
 	"errors"
-	"github.com/clbanning/mxj"
 	"fmt"
-	"os"
+	"github.com/clbanning/mxj"
 	"log"
+	"os"
 )
 
 type Xml struct {
-	fields map[string]string
-	accept string
+	fields      map[string]string
+	accept      string
 	contentType string
 }
-
 
 func XmlInit() DataType {
 	xml := Xml{}
@@ -21,8 +20,9 @@ func XmlInit() DataType {
 	xml.contentType = ""
 	return &xml
 }
+
 // get content type in header request
-func (xml Xml) getContentType() (contentType string)  {
+func (xml Xml) getContentType() (contentType string) {
 	return xml.contentType
 }
 
@@ -33,13 +33,14 @@ func (xml Xml) getAccept() (accept string) {
 
 func (xml Xml) Handler(data []byte) (map[string]interface{}, error) {
 	error := errors.New("")
-	log.Println(data(string()), `test collection`)
+
 	m, err := mxj.NewMapXml(data)
 	v, _ := m.ValuesForKey("xml")
-	//v, _ = m.ValuesForPath("feed.entry.content.properties")
-	v, _ = m.ValuesForPath("service.*")
-	//log.Println(v, `test collection`)
+	v, _ = m.ValuesForPath("feed.entry.content.properties")
+	log.Println(len(v), `test collection`)
 	os.Exit(2)
+	v, _ = m.ValuesForPath("service.workspace.collection")
+
 	if err != nil {
 		error = errors.New("Error opening file")
 	}

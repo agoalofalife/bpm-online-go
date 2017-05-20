@@ -13,3 +13,12 @@ type DataType interface {
 	getAccept() string
 	getContentType() string
 }
+
+// turn  this is implements turn
+type turn interface {
+	// add new process
+	add(process turn) (bool)
+	// remove process
+	remove(process turn)(bool)
+}
+

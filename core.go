@@ -19,7 +19,13 @@ func Start(param string) *Core {
 	core := Core{}
 	split := strings.Split(param, ":")
 
-	core.collection = split[0] + "Collection"
+
+	if len(split[0]) == 0{
+		core.collection = split[0]
+	} else {
+		core.collection = split[0] + "Collection"
+	}
+
 	core.cookie = AuthInit()
 	core.handler = (handlers[split[1]])()
 	return &core
