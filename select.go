@@ -43,7 +43,9 @@ func (read *Select) Execute() bool {
 		})
 
 		easy.Setopt(curl.OPT_NOPROGRESS, false)
-		easy.Setopt(curl.OPT_HTTPHEADER, []string{read.method + "  HTTP/1.0", "Content-type: " + read.core.handler.getContentType()})
+		easy.Setopt(curl.OPT_HTTPHEADER, []string{read.method + "  HTTP/1.0",
+			"Content-type: " + read.core.handler.getContentType(),
+			"Accept : " +  read.core.handler.getAccept()})
 	}
 	if error := easy.Perform(); error != nil {
 		log.Println(error)

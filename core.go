@@ -2,6 +2,7 @@ package bpm
 
 import (
 	"strings"
+
 )
 
 type Core struct {
@@ -18,7 +19,6 @@ func Start(param string) *Core {
 	}
 	core := Core{}
 	split := strings.Split(param, ":")
-
 
 	if len(split[0]) == 0{
 		core.collection = split[0]
