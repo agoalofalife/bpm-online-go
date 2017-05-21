@@ -14,9 +14,3 @@ type DataType interface {
 	getContentType() string
 }
 
-// turn  this is implements turn
-type turn interface {
-	// check on execute
-	stateExecute(data []byte) bool
-}
-
