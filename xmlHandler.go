@@ -41,6 +41,9 @@ func (xml Xml) Handler(data []byte) (interface{}, error) {
 	if  len(v) == 0{
 		v, _ = m.ValuesForPath("service.workspace.collection")
 	}
+	if len(v) == 0 {
+		v, _ = m.ValuesForPath("error.*")
+	}
 
 	return v, error
 }

@@ -17,6 +17,7 @@ type Select struct {
 func Read(core *Core) *Select {
 	read := Select{}
 	read.method = `GET`
+	read.url = `?`
 	read.core = core
 	return &read
 }
@@ -45,7 +46,7 @@ func (read *Select) Execute() interface{} {
 		easy.Setopt(curl.OPT_NOPROGRESS, false)
 		easy.Setopt(curl.OPT_HTTPHEADER, []string{read.method + "  HTTP/1.0",
 			"Content-type: " + read.core.handler.getContentType(),
-			"Accept : " +  read.core.handler.getAccept()})
+			"Accept : " + read.core.handler.getAccept()})
 	}
 
 	if error := easy.Perform(); error != nil {
@@ -53,7 +54,7 @@ func (read *Select) Execute() interface{} {
 		os.Exit(2)
 	}
 
-	code,_ := easy.Getinfo(curl.INFO_RESPONSE_CODE)
+	code, _ := easy.Getinfo(curl.INFO_RESPONSE_CODE)
 	isCode, refreshCookie := read.core.cookie.checkUnauthorized(code.(int))
 
 	// if cookie obsolete example or they simply do not
@@ -63,7 +64,7 @@ func (read *Select) Execute() interface{} {
 		return read.Execute()
 	}
 
-	resultHandler,_  := read.core.handler.Handler(page)
+	resultHandler, _ := read.core.handler.Handler(page)
 	return resultHandler
 }
 
@@ -74,6 +75,70 @@ func (read *Select) FilterConstructor(template string) (readyTemplate string) {
 	return read.constructorUrl(readyTemplate)
 }
 
+/** Service resources can be obtained in the form of sort .
+ * asc  ascending
+ * desc descending
+ * param howSort  asc | desc
+ */
+func (read Select) OrderBy(howSort ...string) string {
+
+	var parameterSort string
+	whoSort := howSort[0]
+
+	if len(howSort) < 2 {
+		parameterSort = `asc`
+	} else {
+		parameterSort = howSort[1]
+	}
+
+	param := `$orderby=`
+	param += strings.ToUpper(whoSort[:1]) + whoSort[1:]
+	param += " " + parameterSort
+
+	return read.constructorUrl(param)
+}
+
+/** In bpm'online support the use of parameter $ the skip ,
+ * which allows you to query the service resources ,
+ * skipping the specified number of entries.
+ */
+func (read Select) Skip(number int) string {
+	parameterQuery := "$skip=" + string(number)
+	return read.constructorUrl(parameterQuery)
+}
+
+/** Restrictions in the sample query
+ * If you want the request to return more than 40 records at a time, it can be implemented using the parameter $ top
+ */
+func (read Select) Amount(number int) string {
+	parameterQuery := "$top=" + string(number)
+	return read.constructorUrl(parameterQuery)
+}
+
+/** The number of records
+ *  example SomeCollection/$count or SomeCollection/$count?$filter=...
+ */
+func (read Select) Count() string {
+	read.url = "/"
+	parameterQuery := "$count"
+	return read.constructorUrl(parameterQuery)
+}
+
+/**
+ * Contains guid
+ * @param $guid
+ * @return $this
+ */
+func (read Select) Guid(guid string) string {
+	read.url = ""
+	parameterQuery := "(guid"
+	parameterQuery += "'"
+	parameterQuery += guid
+	parameterQuery += "'"
+	parameterQuery += ")"
+	return read.constructorUrl(parameterQuery)
+}
+
 // Get current string
 func (read Select) GetUrl() string {
 	return read.url
@@ -81,8 +146,9 @@ func (read Select) GetUrl() string {
 
 // function concat string URL
 func (read *Select) constructorUrl(parameter string) string {
+
 	if read.url == "?" {
-		read.url = parameter
+		read.url += parameter
 	} else if read.url == "" {
 		read.url += parameter
 	} else if read.url == "/" {
