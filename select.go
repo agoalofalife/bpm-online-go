@@ -21,7 +21,7 @@ func Read(core *Core) *Select {
 	return &read
 }
 
-func (read *Select) Execute() bool {
+func (read *Select) Execute() interface{} {
 
 	var page []byte
 	escapeUrl := strings.Replace(read.url, " ", "%20", -1)
@@ -47,12 +47,24 @@ func (read *Select) Execute() bool {
 			"Content-type: " + read.core.handler.getContentType(),
 			"Accept : " +  read.core.handler.getAccept()})
 	}
+
 	if error := easy.Perform(); error != nil {
 		log.Println(error)
 		os.Exit(2)
 	}
-	read.core.handler.Handler(page)
-	return true
+
+	code,_ := easy.Getinfo(curl.INFO_RESPONSE_CODE)
+	isCode, refreshCookie := read.core.cookie.checkUnauthorized(code.(int))
+
+	// if cookie obsolete example or they simply do not
+	if isCode {
+		refreshCookie()
+		// repeat call
+		return read.Execute()
+	}
+
+	resultHandler,_  := read.core.handler.Handler(page)
+	return resultHandler
 }
 
 // filter constructor

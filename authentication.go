@@ -56,6 +56,7 @@ func (c Cookie) GetCookie() (state bool, err string) {
 	return state, err
 }
 
+// get csrf, slice in file string
 func (c Cookie) GetCsrf() string {
 	if _, err := os.Stat(c.fileCookie); os.IsNotExist(err) {
 		c.GetCookie()
@@ -67,3 +68,14 @@ func (c Cookie) GetCsrf() string {
 
 	return matches[0][1]
 }
+
+// check code, and return function for get new Cookie
+func (c Cookie) checkUnauthorized(code int) (bool, func()(state bool, err string)) {
+	equal := false
+	equal = 401 == code
+	if equal{
+		return equal, c.GetCookie
+	}
+	return equal, nil
+}
+
