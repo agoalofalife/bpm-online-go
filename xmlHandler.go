@@ -29,7 +29,7 @@ func (xml Xml) getAccept() (accept string) {
 	return xml.accept
 }
 
-func (xml Xml) Handler(data []byte) ([]interface{}, error) {
+func (xml Xml) Handler(data []byte) (interface{}, error) {
 	error := errors.New("")
 
 	m, err := mxj.NewMapXml(data)

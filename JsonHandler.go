@@ -3,9 +3,8 @@ package bpm
 import (
 	"errors"
 	"github.com/clbanning/mxj"
-	//"fmt"
+	"log"
 	"os"
-	"fmt"
 )
 type Json struct {
 	fields map[string]string
@@ -32,7 +31,7 @@ func (json Json) getAccept() (accept string) {
 	return json.accept
 }
 // handler
-func (json Json) Handler(data []byte) ([]interface{}, error) {
+func (json Json) Handler(data []byte) (interface{}, error) {
 	error := errors.New("")
 
 	m, err := mxj.NewMapJson(data)
@@ -42,13 +41,8 @@ func (json Json) Handler(data []byte) ([]interface{}, error) {
 	}
 	mxj.LeafUseDotNotation()
 	l := m.LeafNodes()
-	maps := make([]interface{}, len(l))
-
-	for i, v := range l {
-		maps[i] = v.Value
-		fmt.Println("path:", v.Path, "value:", v.Value)
-	}
-	//log.Println(maps)
+	//leafvalues := m.LeafValues()
+	log.Println(l)
 	os.Exit(2)
-	return  maps, error
+	return  l, error
 }
